@@ -9,9 +9,8 @@ spring:
       ddl-auto: create
     properties:
       hibernate:
-        # show_sql: true
+        # show_sql: true system.out을 통한 log 출력
         format_sql: true
 logging.level:
   org.hibernate.SQL: debug
-# org.hibernate.type: trace #??? ?? 2.x, hibernate5
-# org.hibernate.orm.jdbc.bind: trace #??? ?? 3.x, hibernate6
+  org.hibernate.orm.jdbc.bind: trace #Spring Boot 3.x, hibernate6
