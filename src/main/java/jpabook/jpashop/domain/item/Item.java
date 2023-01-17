@@ -2,6 +2,7 @@ package jpabook.jpashop.domain.item;
 
 import jakarta.persistence.*;
 import jpabook.jpashop.domain.Category;
+import jpabook.jpashop.exception.NotEnoughStockException;
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -25,4 +26,19 @@ public abstract class Item {
     private int price;
 
     private int stockQuantity;
+
+    //재고를 증가시키는 메소드
+    public void addStock(int quantity) {
+        stockQuantity += quantity;
+    }
+
+    //재고를 증가시키는 메소드
+    public void removeStock(int quantity) {
+        int restStock = stockQuantity - quantity;
+        if (restStock < 0) {
+            throw new NotEnoughStockException("need more stock");
+        }
+        this.stockQuantity = restStock;
+    }
+
 }
