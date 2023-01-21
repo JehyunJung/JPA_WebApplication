@@ -7,9 +7,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -46,6 +45,40 @@ public class ItemController {
         book.setIsbn(form.getIsbn());
 
         itemService.saveItem(book);
+        return "redirect:/items";
+    }
+
+    @GetMapping("/{itemId}/edit")
+    public String updateItemForm(@PathVariable("itemId") Long itemId, Model model) {
+        Book item = (Book) itemService.findOne(itemId);
+
+        BookForm form = new BookForm();
+
+        form.setId(itemId);
+        form.setName(item.getName());
+        form.setPrice(item.getPrice());
+        form.setStockQuantity(item.getStockQuantity());
+        form.setIsbn(item.getIsbn());
+        form.setAuthor(item.getAuthor());
+
+        model.addAttribute("form", form);
+        return "items/updateItemForm";
+    }
+
+    @PostMapping("/{itemId}/edit")
+    public String edit(@ModelAttribute("form") BookForm bookForm, BindingResult bindingResult) {
+        /*
+        //Merge 활용
+        Book book = new Book();
+        book.setId(bookForm.getId());
+        book.setName(bookForm.getName());
+        book.setStockQuantity(bookForm.getStockQuantity());
+        book.setPrice(bookForm.getPrice());
+        book.setAuthor(bookForm.getAuthor());
+        book.setIsbn(bookForm.getIsbn());
+        itemService.saveItem(book);*/
+        //변경감지를 활용
+        itemService.updateItem(bookForm.getId(), bookForm.getName(),bookForm.getPrice(), bookForm.getStockQuantity());
         return "redirect:/items";
     }
 }

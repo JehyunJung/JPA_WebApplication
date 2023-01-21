@@ -38,7 +38,7 @@ public class MemberController {
     @PostMapping("/new")
     public String create(@Valid MemberForm memberForm, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            return "/members/createMemberForm";
+            return "members/createMemberForm";
         }
 
         Address address = new Address(memberForm.getCity(), memberForm.getCity(), memberForm.getZipcode());
