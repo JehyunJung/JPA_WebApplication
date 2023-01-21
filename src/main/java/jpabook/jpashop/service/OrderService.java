@@ -48,8 +48,8 @@ public class OrderService {
         order.cancel();
     }
 
-    /*//조회
+    //조회
     public List<Order> findOrders(OrderSearch orderSearch) {
         return orderRepository.findAll(orderSearch);
-    }*/
+    }
 }

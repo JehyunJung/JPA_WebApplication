@@ -72,7 +72,7 @@ public class OrderRepository {
     }
      */
 
-    /*
+
     //JPACriteria
     public List<Order> findAll(OrderSearch orderSearch) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -90,7 +90,7 @@ public class OrderRepository {
 
         //회원 이름 필터링
         if (StringUtils.hasText(orderSearch.getMemberName())) {
-            Predicate name = cb.like(member.<String>get("member"), "%"+orderSearch.getMemberName()+"%");
+            Predicate name = cb.like(member.<String>get("name"), "%"+orderSearch.getMemberName()+"%");
             criteria.add(name);
         }
 
@@ -99,7 +99,7 @@ public class OrderRepository {
 
         return query.getResultList();
     }
-    */
+
 /*
 
     //QueryDsl
