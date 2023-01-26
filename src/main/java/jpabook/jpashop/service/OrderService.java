@@ -33,7 +33,7 @@ public class OrderService {
         delivery.setStatus(DeliveryStatus.READY);
 
         //주문상품 객체 생성 + 주문 객체 생성
-        OrderItem orderItem = OrderItem.createOrderItem(item, item.getPrice(), count);
+        OrderItem orderItem = OrderItem.createOrderItem(item, count);
         Order order = Order.createOrder(member, delivery, orderItem);
 
         //주문 객체 저장
