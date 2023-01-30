@@ -6,6 +6,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.*;
 import jakarta.validation.constraints.AssertFalse;
+import jpabook.jpashop.api.OrderSimpleApiController;
 import jpabook.jpashop.domain.*;
 import jpabook.jpashop.domain.Order;
 import lombok.RequiredArgsConstructor;
@@ -73,7 +74,7 @@ public class OrderRepository {
     }
      */
 
-/*
+
 
     //JPACriteria
     public List<Order> findAll(OrderSearch orderSearch) {
@@ -101,11 +102,25 @@ public class OrderRepository {
 
         return query.getResultList();
     }
-*/
+
+    public List<Order> findAllWithMemberDelivery() {
+        return em.createQuery("select o from Order o"
+                        + " join fetch o.member m"
+                        + " join fetch o.delivery d", Order.class)
+                .getResultList();
+    }
+
+    public List<SimpleOrderQueryDto> findOrderDtos() {
+        return em.createQuery("select new jpabook.jpashop.repository.SimpleOrderQueryDto(o.id,m.name,"
+                + "o.orderDate, o.status, d.address)"
+                + " from Order o"
+                + " join o.member m"
+                + " join o.delivery d", SimpleOrderQueryDto.class)
+                .getResultList();
+    }
 
 
-
-    //QueryDsl
+   /* //QueryDsl
     public List<Order> findAll(OrderSearch orderSearch) {
         QOrder order = QOrder.order;
         QMember member = QMember.member;
@@ -132,7 +147,7 @@ public class OrderRepository {
                 .fetch();
 
         return orders;
-    }
+    }*/
 
 
 
