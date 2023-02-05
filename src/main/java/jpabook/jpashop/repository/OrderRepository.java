@@ -1,14 +1,11 @@
 package jpabook.jpashop.repository;
 
-import com.querydsl.core.BooleanBuilder;
-import com.querydsl.jpa.impl.JPAQuery;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.*;
-import jakarta.validation.constraints.AssertFalse;
-import jpabook.jpashop.api.OrderSimpleApiController;
 import jpabook.jpashop.domain.*;
 import jpabook.jpashop.domain.Order;
+import jpabook.jpashop.repository.order.simplequery.SimpleOrderQueryDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
@@ -119,7 +116,7 @@ public class OrderRepository {
     }
 
     public List<SimpleOrderQueryDto> findOrderDtos() {
-        return em.createQuery("select new jpabook.jpashop.repository.SimpleOrderQueryDto(o.id,m.name,"
+        return em.createQuery("select new jpabook.jpashop.repository.order.simplequery.SimpleOrderQueryDto(o.id,m.name,"
                 + "o.orderDate, o.status, d.address)"
                 + " from Order o"
                 + " join o.member m"
