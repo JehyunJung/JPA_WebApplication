@@ -1,10 +1,14 @@
 package jpabook.jpashop.repository;
 
+import com.querydsl.core.BooleanBuilder;
+import com.querydsl.jpa.impl.JPAQuery;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.*;
 import jpabook.jpashop.domain.*;
 import jpabook.jpashop.domain.Order;
+import jpabook.jpashop.domain.item.QItem;
 import jpabook.jpashop.repository.order.simplequery.SimpleOrderQueryDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -72,7 +76,7 @@ public class OrderRepository {
      */
 
 
-
+    /*
     //JPACriteria
     public List<Order> findAll(OrderSearch orderSearch) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -98,6 +102,44 @@ public class OrderRepository {
         TypedQuery<Order> query = em.createQuery(cq).setMaxResults(1000);
 
         return query.getResultList();
+    }
+    */
+
+
+    //QueryDsl
+    public List<Order> findAll(OrderSearch orderSearch) {
+        QOrder order = QOrder.order;
+        QMember member = QMember.member;
+        QDelivery delivery = QDelivery.delivery;
+        QOrderItem orderItem = QOrderItem.orderItem;
+        QItem item = QItem.item;
+
+        BooleanBuilder builder = new BooleanBuilder();
+        //주문 상태 필터링
+        if (orderSearch.getOrderStatus() != null) {
+            builder.and(order.status.eq(orderSearch.getOrderStatus()));
+        }
+
+        //회원 이름 필터링
+        if (StringUtils.hasText(orderSearch.getMemberName())) {
+            builder.and(member.name.like(orderSearch.getMemberName()));
+        }
+
+        JPAQueryFactory query = new JPAQueryFactory(em);
+
+
+        List<Order> orders = query
+                .select(order)
+                .from(order)
+                .join(order.member, member).fetchJoin()
+                .join(order.delivery,delivery).fetchJoin()
+                .join(order.orderItems,orderItem).fetchJoin()
+                .join(orderItem.item,item).fetchJoin()
+                .where(builder)
+                .limit(1000)
+                .fetch();
+
+        return orders;
     }
 
     public List<Order> findAllWithMemberDelivery() {
@@ -135,35 +177,6 @@ public class OrderRepository {
                 .getResultList();
     }
 
-
-   /* //QueryDsl
-    public List<Order> findAll(OrderSearch orderSearch) {
-        QOrder order = QOrder.order;
-        QMember member = QMember.member;
-
-        BooleanBuilder builder = new BooleanBuilder();
-        //주문 상태 필터링
-        if (orderSearch.getOrderStatus() != null) {
-            builder.and(order.status.eq(orderSearch.getOrderStatus()));
-        }
-
-        //회원 이름 필터링
-        if (StringUtils.hasText(orderSearch.getMemberName())) {
-            builder.and(member.name.like(orderSearch.getMemberName()));
-        }
-
-        JPAQuery query = new JPAQuery(em);
-
-        List<Order> orders = query
-                .select(order)
-                .from(order)
-                .join(order.member, member)
-                .where(builder)
-                .limit(1000)
-                .fetch();
-
-        return orders;
-    }*/
 
 
 

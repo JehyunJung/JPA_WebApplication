@@ -7,6 +7,7 @@ import jpabook.jpashop.domain.item.Item;
 import jpabook.jpashop.service.ItemService;
 import jpabook.jpashop.service.MemberService;
 import jpabook.jpashop.service.OrderService;
+import jpabook.jpashop.service.query.OrderQueryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -23,9 +24,11 @@ public class OrderController {
     private final ItemService itemService;
     private final OrderService orderService;
 
+    private final OrderQueryService orderQueryService;
+
     @GetMapping("/orders")
     public String orders(@ModelAttribute("orderSearch") OrderSearch orderSearch, Model model) {
-        List<Order> orders = orderService.findOrders(orderSearch);
+        List<Order> orders = orderQueryService.findOrdersWithFiltering(orderSearch);
         model.addAttribute("orders", orders);
         return "orders/orderList";
     }
